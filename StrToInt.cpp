@@ -3,7 +3,8 @@
 
 using namespace std;
 
-enum Status{kInvalid = -1, kValid = 0};
+//定义几个错误状态枚举
+enum Status{kValid = 0,kNULL,kOVERFLOW,kCHAR};
 int status =  kValid;
 
 int strToInt(char* str)
@@ -11,19 +12,21 @@ int strToInt(char* str)
     /* 空指针检查 */
     if (str == NULL)
     {
-        status = kInvalid;
+        status = kNULL;
         return 0;
     }
-    
+
+    /* 处理字符串前面的几个空格 */
+    while(isspace(*str))
+        str++;
+
     /* 正负号处理 */
     int flag = 1;
     if (*str == '-')
     {
         flag = -1;
-        str++;
     }
-    else if(*str == '+')
-        str++;
+    str++;
 
     /* 数值操作 */
     int number = 0;
@@ -32,27 +35,23 @@ int strToInt(char* str)
         if (*str >= '0' && *str <= '9')
         {
             number = number * 10 + *str - '0';
-            /* 处理overflow，int类型的范围为[-2147483648,2147483647]
-             * */
-            if (number == 214748364)
+            /* 处理overflow，int类型的范围为[-2147483648,2147483647]*/
+            if (number < 0)
             {
-                str++;
-                int fu = (flag == -1) && ((*str - '0')>8);
-                int zheng = (flag == 1) && ((*str - '0')>7);
-                if (fu || zheng)
-                {
-                    number = 0;
-                    break;
-                }
-                str--;
-            }
+                if(flag == 1)
+                    number = std::numeric_limits<int>::max();
+                else if (flag == -1)
+                    number = std::numeric_limits<int>::min();
+                status = kOVERFLOW;
+                break;
+            } 
             str++;
         }
         else
         {
-        /* 处理字符串中的非数字字符,策略是返回无效字符串状态 */
-            status = kInvalid;
-            return 0;
+            /* 处理字符串中的非数字字符,策略是返回无效字符串状态 */
+            status = kCHAR;
+            break;
         }
     }
     return number * flag;
@@ -65,9 +64,19 @@ int main()
     cin.getline(str,80);
     
     int result = strToInt(str);
-    if (status == kValid)
-        cout << "字符串" << str << "对应的整数是：" << result <<endl;
-    else
-        cout << "输入有误" <<endl;
+    switch(status){
+        case kValid:
+            cout << "字符串" << str << "对应的整数是：" << result <<endl;
+            break;
+        case kNULL:
+            cout << "空指针错误" <<endl;
+            break;
+        case kCHAR:
+            cout << "输入的字符串中有非数字字符" <<endl;
+            break;
+        case kOVERFLOW:
+            cout << "输入的字符串对应的数字使得Int类型溢出" <<endl;
+            cout << result <<endl;
+    }
     return 0;
 }

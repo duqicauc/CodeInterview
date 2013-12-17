@@ -7,7 +7,7 @@ using namespace std;
 enum Status{kValid = 0,kNULL,kOVERFLOW,kCHAR};
 int status =  kValid;
 
-int strToInt(char* str)
+int strToInt(const char* str)
 {
     /* 空指针检查 */
     if (str == NULL)
@@ -25,8 +25,10 @@ int strToInt(char* str)
     if (*str == '-')
     {
         flag = -1;
+        str++;
     }
-    str++;
+    else if (*str == '+')
+        str++;
 
     /* 数值操作 */
     int number = 0;
@@ -43,7 +45,7 @@ int strToInt(char* str)
                 else if (flag == -1)
                     number = std::numeric_limits<int>::min();
                 status = kOVERFLOW;
-                break;
+                return number;
             } 
             str++;
         }

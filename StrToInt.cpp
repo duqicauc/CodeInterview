@@ -75,6 +75,7 @@ int main()
             break;
         case kCHAR:
             cout << "输入的字符串中有非数字字符" <<endl;
+            cout << result <<endl;
             break;
         case kOVERFLOW:
             cout << "输入的字符串对应的数字使得Int类型溢出" <<endl;

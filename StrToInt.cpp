@@ -32,10 +32,19 @@ int strToInt(char* str)
         if (*str >= '0' && *str <= '9')
         {
             number = number * 10 + *str - '0';
-            if (number > std::numeric_limits<int>::max())
+            /* 处理overflow，int类型的范围为[-2147483648,2147483647]
+             * */
+            if (number == 214748364)
             {
-                number = 0;
-                break;
+                str++;
+                int fu = (flag == -1) && ((*str - '0')>8);
+                int zheng = (flag == 1) && ((*str - '0')>7);
+                if (fu || zheng)
+                {
+                    number = 0;
+                    break;
+                }
+                str--;
             }
             str++;
         }

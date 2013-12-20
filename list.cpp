@@ -52,7 +52,8 @@ nodeptr findKthFromEnd(list pHead, int k)
     nodeptr pAhead = pHead->next;
     nodeptr pBehind = NULL;
 
-    for (int i = 0; i < k-1; i++)
+    /* 将快指针从第一个结点向后移动k-1步 */
+    for (int i = 1; i < k; i++)
     {
         if(pAhead->next != NULL)
             pAhead = pAhead->next;
@@ -60,8 +61,11 @@ nodeptr findKthFromEnd(list pHead, int k)
             return NULL;
     }
     
+    /* 从第k步开始，慢指针也开始移动，这样
+     * 快慢指针之间相隔k-1步，那么，从快
+     * 指针起算第一个结点，那么到慢指针指向
+     * 的结点就恰好是第k个，之间相隔k-1个步*/
     pBehind = pHead->next;
-
     while(pAhead->next != NULL)
     {
         pAhead = pAhead->next;

@@ -59,19 +59,59 @@ int minOfRoatation(int *data, int length)
     return data[indexMinIndex];
 }
 
+/* 针对已经排序好的数组这一种特殊情况，用if语句摘出来处理 */
+int minOfRoatation2(int *data, int length)
+{
+    if(data == NULL || length <= 0)
+    {
+        cout << "Invalid Parameters" <<endl;
+        throw exception();
+    }
+
+    int index1 = 0;
+    int index2 = length - 1;
+    int indexMin;
+    if(data[index1] < data[index2])
+    {
+        indexMin = index1;    
+    }
+    else
+    {
+        while(index2 - index1 != 1)
+        {
+            indexMin = (index1 + index2)/2;
+            if(data[index1] == data[index2] &&
+               data[index1] == data[indexMin] &&
+               data[index2] == data[indexMin])
+                return minInOrder(data, index1, index2);
+            if(data[indexMin] >= data[index1])
+                index1 = indexMin;
+            else if(data[indexMin] <= data[index2])
+                index2 = indexMin;
+        }
+    }
+    return data[indexMin];
+}
+
 int main()
 {
     int data1[] = {3, 4, 5, 1, 2};
     cout << minOfRoatation(data1, 5) <<endl;
+    cout << minOfRoatation2(data1, 5) <<endl;
     int data2[] = {1, 0, 1, 1, 1};
     cout << minOfRoatation(data2, 5) <<endl;
+    cout << minOfRoatation2(data2, 5) <<endl;
     int data3[] = {1, 1, 1, 0, 1};
     cout << minOfRoatation(data3,5) <<endl;
+    cout << minOfRoatation2(data3, 5) <<endl;
     int data4[] = {1, 2, 3, 4, 5};
     cout << minOfRoatation(data4, 5) <<endl;
+    cout << minOfRoatation2(data4, 5) <<endl;
     int data5[] = {1};
     cout << minOfRoatation(data5, 1) <<endl;
-    int *data6 = NULL;
-    cout << minOfRoatation(data6, 4) <<endl;
+    cout << minOfRoatation2(data5, 1) <<endl;
+    //int *data6 = NULL;
+    //cout << minOfRoatation(data6, 4) <<endl;
+    //cout << minOfRoatation2(data6, 4) <<endl;
     return 0;
 }

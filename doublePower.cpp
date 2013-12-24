@@ -53,9 +53,17 @@ double Power(double base, int exponent)
 
 double PowerWithUnsignedExponent(double base, unsigned int exponent)
 {
-    double result = 1.0;// base和指数都为0，默认为1.0
-    for(unsigned int i = 1; i <= exponent; i++)
+    if(exponent == 0) //base为正/负/零，只要指数为0，则结果为1.0
+        return 1.0;
+    if(exponent == 1)
+        return base;
+
+    // 使用右移代替除以2；使用位与运算代替求余(%)判断奇偶数
+    double result = PowerWithUnsignedExponent(base, exponent >> 1);
+    result *= result;
+    if((exponent & 0x1) == 1)
         result *= base;
+
     return result;
 }
 

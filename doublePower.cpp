@@ -1,6 +1,19 @@
 /* 
  * 题目：实现函数double Power(double base, int exponent),求base的exponent次方。
  * 不得使用库函数，同时不需要考虑大数问题。 
+ *
+ * 本题主要考察思维的全面性，考虑底数和指数分别为正数、负数和零。
+ * 测试用例：
+ * base = 2.5, exponent = 2;    ---> 6.25
+ * base = 2.5, exponent = 0;    ---> 1
+ * base = 2.5, exponent = -2;   ---> 0.16
+ * base = 0, exponent = 2;      ---> 0
+ * base = 0, exponent = 0;      ---> 1
+ * base = 0, exponent = -2;     ---> inf
+ * base = -2.5, exponent = 2;   ---> 6.25
+ * base = -2.5, exponent = 0;   ---> 1
+ * base = -2.5, exponent = -2   ---> 0.16
+ * 相应结果：（使用cmath中库函数pow跑出的结果）
  */
 
 #include <iostream>
@@ -8,10 +21,39 @@
 
 using namespace std;
 
+bool g_InvalidInput = false; //便于区分返回的0是否为出错时返回的0
+
+double PowerWithUnsignedExponent(double, unsigned int);
+
 double Power(double base, int exponent)
 {
-    double result = 1.0;
-    for(int i = 1; i <= exponent; i++)
+    // 底数为0，指数为负数的出错处理
+    g_InvalidInput = false;
+    if(base == 0.0 && exponent < 0)
+    {
+        g_InvalidInput = true;
+        return 0.0;
+    }
+    
+    // 求指数的绝对值
+    unsigned int absExponent;
+    if(exponent < 0)
+        absExponent = (unsigned int)(-exponent);
+    else
+        absExponent = (unsigned int)exponent;
+
+    // 求正常的base值，在指数为正的时候的值，然后再根据指数正负处理是否需要求倒数
+    double result = PowerWithUnsignedExponent(base, absExponent);
+    if(exponent < 0)
+        result = 1.0 / result;
+
+    return result;
+}
+
+double PowerWithUnsignedExponent(double base, unsigned int exponent)
+{
+    double result = 1.0;// base和指数都为0，默认为1.0
+    for(unsigned int i = 1; i <= exponent; i++)
         result *= base;
     return result;
 }

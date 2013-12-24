@@ -32,6 +32,7 @@ double Power(double base, int exponent)
     if(base == 0.0 && exponent < 0)
     {
         g_InvalidInput = true;
+        cout << "inf" <<endl; //表示计算是错误的！！！
         return 0.0;
     }
     
@@ -56,6 +57,19 @@ double PowerWithUnsignedExponent(double base, unsigned int exponent)
     for(unsigned int i = 1; i <= exponent; i++)
         result *= base;
     return result;
+}
+
+/* 
+ * 对浮点数比较大小时不要使用==；本来应该相等的两个浮点数由于计算机内部表示的原因可能
+ * 有微小的误差，这时用==就会认为它们不相等。应该使用两个浮点数之间的差值的绝对值小于
+ * 某个值来判断它们是否相等。
+ * */
+bool equal(double num1, double num2)
+{
+    if((num1 - num2 > -0.0000001)&&(num1 - num2 < 0.0000001))
+        return true;
+    else
+        return false;
 }
 
 int main()

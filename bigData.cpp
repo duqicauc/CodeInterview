@@ -46,6 +46,10 @@ bool Increment(char* number)
     return isOverFlow;
 }
 
+/*
+ * 把字符串表达的数字打印出来
+ * 只有碰到第一个非0的字符之后才开始打印
+ * */
 void PrintNumber(char* number)
 {
    int i = 0;
@@ -61,17 +65,53 @@ void PrintNumber(char* number)
 /* print1ToMaxOfNDigits(int n) */
 void print1ToMaxOfNDigits(int n)
 {
+    /* 输入参数检查 */
     if(n <= 0)
         return;
-
+    /* 初始化内存空间 */
     char* number = new char[n+1];
     memset(number, '0', n);
     number[n] = '\0';
-
+    
     while(!Increment(number))
         PrintNumber(number);
     cout<<endl;
+    
     delete []number;
+}
+
+void print1ToMaxOfNDigits_recursively(char* number, int length,int index)
+{
+    if(index == length - 1)
+    {
+        PrintNumber(number);
+        return;
+    }
+
+    for(int i = 0; i < 10; ++i)
+    {
+        number[index + 1] = i + '0';
+        print1ToMaxOfNDigits_recursively(number, length, index+1);
+    }
+}
+
+/* n位所有十进制数其实就是n个从0到9的全排列 */
+void print1ToMaxOfNDigits2(int n)
+{
+    if(n <=0)
+        return ;
+
+    char* number = new char[n+1];
+    number[n] = '\0';
+
+    for(int i = 0; i < 10; i++)
+    {
+        number[0] = i + '0';
+        print1ToMaxOfNDigits_recursively(number, n, 0);
+    }
+    cout << endl;
+
+    delete[] number;
 }
 
 int main(int argc, char* argv[])
@@ -83,6 +123,7 @@ int main(int argc, char* argv[])
     }
 
     int n = atoi(argv[1]);
-    print1ToMaxOfNDigits(n);
+    //print1ToMaxOfNDigits(n);
+    print1ToMaxOfNDigits2(n);
     return 0;
 }

@@ -33,7 +33,8 @@ bool compareBinToHex(string binary, string hex)
 
 int convertToBase(string number, int base)
 {
-	if (base < 2 || (base > 2 && base != 16))
+	// 对于base的值，大于10的数中除了16都是无效的
+	if (base < 2 || (base > 10 && base != 16))
 		return -1;
 	int value = 0;
 	for (int i = number.length()-1; i >= 0; i--){

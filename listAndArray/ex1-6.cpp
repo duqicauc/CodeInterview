@@ -44,14 +44,14 @@ void routeMatrix(int matrix[][N], int row_size)
 		int first = layer;
 		int last = N - layer - 1;
 
-		for (int i = first; i < last; ++i)//i用于记录这一层中的第几组转移
+		for (int i = first; i < last; ++i)//i用于记录这一层旋转中的第i组转移
 		{
-			int offset = i - first;
+			int offset = i - first;//用于考虑移动从last向前算的第offset个元素
 
-			int temp = matrix[first][i]; // temp = top[i]
-			matrix[first][i] = matrix[last-offset][first]; // top = left
-			matrix[last-offset][first] = matrix[last][last-offset]; // left = bottom
-			matrix[last][last-offset] = matrix[i][last-offset];  // bottom = right
+			int temp = matrix[first][i]; // top:第first行的第i个
+			matrix[first][i] = matrix[last-offset][first]; // left:第first列的第（last-offset）个
+			matrix[last-offset][first] = matrix[last][last-offset]; //bottom:第last行的地(last-offset)个
+			matrix[last][last-offset] = matrix[i][last-offset];  // right:第last列的第i个
 			matrix[i][last-offset] = temp; //right =  temp
 		}
 

@@ -32,10 +32,12 @@ int main(int argc, char const *argv[])
 
 void process(int martix[][N], int row_size)
 {
-	int row[M] = {-1,-1,-1};
-	int col[N] = {-1,-1,-1,-1};
-	int r=0;
-	int c=0;
+	//int row[M] = {-1,-1,-1};
+	//int col[N] = {-1,-1,-1,-1};
+	bool row[M] = {false};
+	bool col[N] = {false};
+	//int r=0;
+	//int c=0;
 
 	for (int i = 0; i < M; ++i)
 	{
@@ -43,12 +45,29 @@ void process(int martix[][N], int row_size)
 		{
 			if (martix[i][j] == 0)
 			{
-				row[r++] = i;
-				col[c++] = j;
+				//row[r++] = i;
+				//col[c++] = j;
+				row[i] = true;
+				col[j] = true;
 			}
 		}
 	}
 
+	// 这里row 和col记录的某一行或列有零元素即可，而不记录它的具体位置
+	// 所以，清零操作是再次遍历一次矩阵即可
+	for (int i = 0; i < M; ++i)
+	{
+		for (int j = 0; j < N; ++j)
+		{
+			if (row[i] || col[j])
+			{
+				martix[i][j] = 0;
+			}
+		}
+	}
+/*
+	// 如果用row 和col依次记录的是0元素的具体的行和列，则
+	// 根据对row 和col的嵌套扫描，依次将行和列清零
 	for (int i = 0; i < M; ++i)
 	{
 		if (row[i] == -1)
@@ -66,4 +85,5 @@ void process(int martix[][N], int row_size)
 			martix[j][col[i]] = 0;
 		}
 	}
+*/
 }

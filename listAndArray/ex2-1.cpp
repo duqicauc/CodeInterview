@@ -24,12 +24,14 @@ public:
 	void insertToHead(int data);
 	void print();
 	void deleteNode(int data);
+	void deleteNode(LNode *p);
 	void clearNodes();
 	void removeDupNode();
 	void removeDupNodeWithHash();
 
 	LNode *findBackKthNod(int k);
 	LNode *findBackKthNod_recur(int k);
+
 	~List();
 	/* data */
 private:
@@ -111,6 +113,24 @@ void List::deleteNode(int data)
 		}
 		pre = pre->next;
 	}
+}
+
+void List::deleteNode(LNode *p)
+{
+	LNode *nx = p->next;
+	while(nx != NULL)
+	{
+		if (nx->next == NULL)
+		{
+			tail = p;
+		}
+		p->data = nx->data;
+		p = nx;
+		nx = nx->next;
+	}
+	LNode *temp = p;
+	delete temp;
+	tail->next = NULL;
 }
 
 void List::clearNodes()
@@ -238,8 +258,9 @@ LNode* List::findBackKthNod(int k)
 
 LNode* nToLast(LNode *p, int k, int &i)
 {
-	if (p == NULL)
+	if (p->next == NULL)
 	{
+		// the tail node is the 1th from last
 		return NULL;
 	}
 	LNode *nd = nToLast(p->next,k,i);
@@ -264,7 +285,7 @@ LNode* List::findBackKthNod_recur(int k)
 		return NULL;
 	}
 	LNode *p = head->next;
-	int i=0;
+	int i=1;
 	return nToLast(p,k,i);
 }
 
@@ -282,11 +303,12 @@ int main(int argc, char const *argv[])
 	l1.print();
 	//l1.clearNodes();
 	//l1.removeDupNodeWithHash();
-	LNode *knode = l1.findBackKthNod(4);
+	LNode *knode = l1.findBackKthNod_recur(4);
 	if (knode != NULL)
 	{
 		cout << knode->data <<endl;
 	}
-	//l1.print();
+	l1.deleteNode(knode);
+	l1.print();
 	return 0;
 }

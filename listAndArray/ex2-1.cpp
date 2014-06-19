@@ -27,6 +27,9 @@ public:
 	void clearNodes();
 	void removeDupNode();
 	void removeDupNodeWithHash();
+
+	LNode *findBackKthNod(int k);
+	LNode *findBackKthNod_recur(int k);
 	~List();
 	/* data */
 private:
@@ -196,21 +199,94 @@ void List::removeDupNodeWithHash()
 	}
 }
 
+//2-2: find the back kth node in single linklist
+// example: 7->9->6->8->5->3
+// the 1th is '3' and the 6th is '7'
+// notice the first is 0th or 1th
+LNode* List::findBackKthNod(int k)
+{
+	if (head == tail)
+	{
+		cout << "the linklist is empty!" <<endl;
+		return NULL;
+	}
+	if (k < 1)
+	{
+		cout << "the k is meaningless value" <<endl;
+	}
+
+	LNode *fast = head->next;
+	LNode *slow = head->next;
+
+	for (int i = 1; i <= k; ++i)
+	{
+		if (fast == NULL) // k > length
+		{
+			//cout << "k > length" <<endl;
+			return NULL;
+		}
+		fast = fast->next;
+	}
+
+	while(fast != NULL)
+	{
+		fast = fast->next;
+		slow = slow->next;
+	}
+	return slow;
+}
+
+LNode* nToLast(LNode *p, int k, int &i)
+{
+	if (p == NULL)
+	{
+		return NULL;
+	}
+	LNode *nd = nToLast(p->next,k,i);
+	i += 1;
+	if (i == k)
+	{
+		return p;
+	}
+	return nd;
+}
+
+LNode* List::findBackKthNod_recur(int k)
+{
+	if (head == tail)
+	{
+		cout << "the linklist is empty!" <<endl;
+		return NULL;
+	}
+	if (k < 1)
+	{
+		cout << "the k is meaningless value" <<endl;
+		return NULL;
+	}
+	LNode *p = head->next;
+	int i=0;
+	return nToLast(p,k,i);
+}
 
 int main(int argc, char const *argv[])
 {
 	List l1;
-	l1.appendToTail(7);
+	l1.appendToTail(8);
 	l1.appendToTail(5);
 	l1.appendToTail(3);
 	//l1.print();
-	l1.insertToHead(7);
+	l1.insertToHead(6);
 	l1.insertToHead(9);
 	//l1.deleteNode(4);
 	l1.insertToHead(7);
 	l1.print();
 	//l1.clearNodes();
-	l1.removeDupNodeWithHash();
-	l1.print();
+	//l1.removeDupNodeWithHash();
+	LNode *knode = l1.findBackKthNod(4);
+	if (knode != NULL)
+	{
+		cout << knode->data <<endl;
+	}
+	//l1.print();
 	return 0;
 }

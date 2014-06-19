@@ -32,6 +32,8 @@ public:
 	LNode *findBackKthNod(int k);
 	LNode *findBackKthNod_recur(int k);
 
+	List splitByX(int x);
+	List splitByX_withOldNode(int x);
 	~List();
 	/* data */
 private:
@@ -120,16 +122,20 @@ void List::deleteNode(LNode *p)
 	LNode *nx = p->next;
 	while(nx != NULL)
 	{
+		// when dealing with the last node ,notice to update the tail
 		if (nx->next == NULL)
 		{
 			tail = p;
 		}
+		// simliar to the delete of vector
 		p->data = nx->data;
 		p = nx;
 		nx = nx->next;
 	}
+	// release the memory handly
 	LNode *temp = p;
 	delete temp;
+	// repair the linklist
 	tail->next = NULL;
 }
 
@@ -289,6 +295,97 @@ LNode* List::findBackKthNod_recur(int k)
 	return nToLast(p,k,i);
 }
 
+/*
+这个方法，是重新建立一个链表，遇到比x小的则头插添加到新链表；否则用尾插法添加到新链表
+如果题目限定只能用原来链表中的节点，则需要重新考虑
+*/
+List List::splitByX(int x)
+{
+	List newlist;
+	LNode *p = head->next;
+	LNode *temp;
+
+	while(p != NULL)
+	{
+		if (p->data < x)
+		{
+			// when p->data is little than x, then insert it to the new list from head
+			newlist.insertToHead(p->data);
+		}
+		else
+		{
+			// when p->data is equal or bigger than x, then add it to the new list from tail
+			newlist.appendToTail(p->data);
+		}
+		// release the old node step by step
+		temp = p;
+		delete temp;
+		p = p->next;
+	}
+
+	return newlist;
+}
+
+//分割链表，利用原来的节点构建新链表
+List List::splitByX_withOldNode(int x)
+{
+	List newlist;
+	LNode *before = NULL;
+	LNode *before_tail = NULL;
+	LNode *after = NULL;
+	LNode *after_tail = NULL;
+
+	LNode *p = head->next;
+	LNode *temp;
+
+	while(p != NULL)
+	{
+		temp = p->next; // backend the link
+
+		p->next = NULL;
+		if (p->data < x)
+		{
+			if (before == NULL) //first node
+			{
+				before = p;
+				before_tail = before;
+			}
+			else
+			{
+				before_tail->next = p;
+				before_tail = p;
+			}
+		}
+		else
+		{
+			if (after == NULL)
+			{
+				after = p;
+				after_tail = after;
+			}
+			else
+			{
+				after_tail->next = p;
+				after_tail = p;
+			}
+		}
+		p = temp;
+	}
+
+	if (before == NULL)
+	{
+		//cout << "****" << endl;
+		newlist.head = after;
+		newlist.tail = after_tail;
+		return newlist;
+	}
+
+	before_tail->next = after;
+	newlist.head->next = before;
+	newlist.tail = after_tail;
+	return newlist;
+}
+
 int main(int argc, char const *argv[])
 {
 	List l1;
@@ -308,7 +405,10 @@ int main(int argc, char const *argv[])
 	{
 		cout << knode->data <<endl;
 	}
-	l1.deleteNode(knode);
-	l1.print();
+	//l1.deleteNode(knode);
+
+	List newlist = l1.splitByX_withOldNode(7);
+	newlist.print();
+	//l1.print();
 	return 0;
 }

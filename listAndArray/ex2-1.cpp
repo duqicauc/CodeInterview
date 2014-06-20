@@ -41,6 +41,9 @@ public:
 	bool isPlalindrome();
 	void reverse();
 
+	//static LNode *linklistAdd(LNode *a,LNode *b);
+	void setHead(LNode *h);
+	void setTail(LNode *t);
 	LNode *getHead();
 	LNode *getTail();
 	~List();
@@ -55,6 +58,20 @@ List::List()
 	head = new LNode;
 	head->next = NULL;
 	tail = head;
+}
+
+void List::setHead(LNode *h)
+{
+	head->next = h;
+}
+
+void List::setTail(LNode *t)
+{
+	if (head->next == NULL)
+	{
+		tail = head;
+	}
+	tail = t;
 }
 
 LNode* List::getHead()
@@ -584,6 +601,71 @@ void isPlalindrome_test()
 	}
 }
 
+
+//2-5:给定两个链表表示的整数，每个结点表示一个数位。这些数位是反向存放的，也就是个位排列在链表首部。
+//编写函数对这两个整数求和，并用链表形式返回结果。
+//示例:
+//输入：（7->1->6）+ (5->9->2),即617+295
+//输出：2->1->9，即912。
+LNode* linklistAdd(LNode *a, LNode *b, int carry)
+{
+	// recur base
+	if (a == NULL && b == NULL && carry == 0)
+	{
+		return NULL;
+	}
+
+	LNode *result = new LNode;
+
+	int value = carry;
+	if (a != NULL)
+	{
+		value += a->data;
+	}
+	if (b != NULL)
+	{
+		value += b->data;
+	}
+
+	result->data = value % 10;
+
+	// go into the next recur level
+	LNode* more = linklistAdd(a->next == NULL ? NULL:a->next,
+		b->next == NULL ? NULL : b->next, value >= 10 ? 1 : 0);
+
+	result->next = more;
+//	cout << result->data << endl;
+	return result;
+}
+
+void linklistAdd_test()
+{
+	List l1;
+	l1.insertToHead(6);
+	l1.insertToHead(1);
+	l1.insertToHead(7);
+	l1.print();
+	List l2;
+	l2.insertToHead(2);
+	l2.insertToHead(9);
+	l2.insertToHead(5);
+	l2.print();
+	List result;
+	LNode *ll = linklistAdd(l1.getHead()->next,l2.getHead()->next,0);
+	//cout << ll->data <<endl;
+	//construct the result linklist
+	result.setHead(ll);
+	LNode *ta = ll;
+	while(ta->next != NULL)
+	{
+		ta = ta->next;
+	}
+	result.setTail(ta);
+	
+	result.print();
+}
+
+
 int main(int argc, char const *argv[])
 {
 	/*
@@ -611,7 +693,8 @@ int main(int argc, char const *argv[])
 	//l1.print();
 	*/
 	//getLoopStart_test();
-	isPlalindrome_test();
+	//isPlalindrome_test();
 	//reverse_test();
+	linklistAdd_test();
 	return 0;
 }

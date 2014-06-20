@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <map>
+#include <stack>
 using namespace std;
 
 struct LNode
@@ -35,6 +36,10 @@ public:
 	List splitByX(int x);
 	List splitByX_withOldNode(int x);
 	LNode *getLoopStart();
+
+	bool isPlalindrome1();
+	bool isPlalindrome();
+	void reverse();
 
 	LNode *getHead();
 	LNode *getTail();
@@ -463,6 +468,122 @@ void getLoopStart_test()
 	}
 }
 
+
+//2-7：编写一个函数，检查链表是否为回文
+//解法：
+//(1)有空间复杂度O(n),新建一个反转链表l2,然后和l1依次比较
+//(2)推荐：有空间复杂度O(n),利用栈记录前半条链表，然后一边弹栈，一边遍历后半条链表
+//(3)利用递归,空间复杂度也是O(n)
+
+bool List::isPlalindrome()
+{
+	LNode *slow,*fast;
+	slow = fast = head->next;
+	stack<int> nodeStack;
+
+	while(fast != NULL && fast->next != NULL)
+	{
+		nodeStack.push(slow->data);
+		slow = slow->next;
+		fast = fast->next->next;
+	}
+	
+	//if the length is odd number, then skip a slow node
+	if (fast != NULL)
+	{
+		slow = slow->next;
+	}
+
+	while(slow != NULL)
+	{
+		if (slow->data != nodeStack.top())
+		{
+			return false;
+		}
+		slow = slow->next;
+		nodeStack.pop();
+	}
+	return true;
+}
+
+//if we want to reverse the list,just traverse the list and insert each node after the head.
+void List::reverse()
+{
+	LNode *p = head->next;
+	head->next = NULL;
+	LNode *temp;
+
+	while(p != NULL)
+	{
+		temp = p->next;
+		p->next = head->next;
+		if (p->next == NULL)
+		{
+			tail = p;
+		}
+		head->next = p;
+		p = temp;
+	}
+}
+
+bool List::isPlalindrome1()
+{
+	LNode *p = head->next;
+	List reverseList;
+	while(p != NULL)
+	{
+		reverseList.insertToHead(p->data);
+		p = p->next;
+	}
+
+	p = head->next;
+	LNode *q = reverseList.getHead()->next;
+
+	while(p != NULL && q!=NULL)
+	{
+		if (p->data != q->data)
+		{
+			return false;
+		}
+		p = p->next;
+		q = q->next;
+	}
+
+	return true;
+}
+
+void reverse_test()
+{
+	List l;
+	l.appendToTail(1);
+	l.appendToTail(2);
+	l.appendToTail(3);
+	l.appendToTail(4);
+
+	l.reverse();
+	l.print();
+}
+
+void isPlalindrome_test()
+{
+	List l;
+	l.appendToTail(1);
+	l.appendToTail(2);
+	l.appendToTail(3);
+	l.appendToTail(4);
+	l.appendToTail(3);
+	l.appendToTail(2);
+	l.appendToTail(1);
+	if (l.isPlalindrome1())
+	{
+		cout << "the linklist is plalindrome" <<endl;
+	}
+	else
+	{
+		cout << "the linklist is not plalindrome" <<endl;
+	}
+}
+
 int main(int argc, char const *argv[])
 {
 	/*
@@ -489,6 +610,8 @@ int main(int argc, char const *argv[])
 	newlist.print();
 	//l1.print();
 	*/
-	getLoopStart_test();
+	//getLoopStart_test();
+	isPlalindrome_test();
+	//reverse_test();
 	return 0;
 }

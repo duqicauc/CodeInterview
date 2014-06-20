@@ -34,6 +34,10 @@ public:
 
 	List splitByX(int x);
 	List splitByX_withOldNode(int x);
+	LNode *getLoopStart();
+
+	LNode *getHead();
+	LNode *getTail();
 	~List();
 	/* data */
 private:
@@ -46,6 +50,16 @@ List::List()
 	head = new LNode;
 	head->next = NULL;
 	tail = head;
+}
+
+LNode* List::getHead()
+{
+	return head;
+}
+
+LNode* List::getTail()
+{
+	return tail;
 }
 
 void List::appendToTail(int data)
@@ -386,8 +400,72 @@ List List::splitByX_withOldNode(int x)
 	return newlist;
 }
 
+//2-6:给定一个有环链表，实现一个算法返回环路的开头结点。
+//有环链表的定义：在链表中的某个结点的next元素指向在它前面出现的结点，则表明该链表存在环路
+//示例：
+//输入：1->2->3->4->5->3
+//输出：3
+LNode* List::getLoopStart()
+{
+	LNode *slow,*fast;
+	slow = fast = head->next;
+
+	while(fast != NULL && fast->next !=NULL)
+	{
+		slow = slow->next;
+		fast = fast->next->next;
+		if (slow == fast)
+		{
+			// the collisionNode and the head are all k step from the loopstart
+			break;
+		}
+	}
+
+	if (fast == NULL || fast->next == NULL)
+	{
+		return NULL;
+	}
+
+	slow = head->next;
+	while(slow != fast)
+	{
+		slow = slow->next;
+		fast = fast->next;
+		if (slow == fast)
+		{
+			break;
+		}
+	}
+
+	return slow;
+}
+
+/* test functions */
+void getLoopStart_test()
+{
+	List l;
+	l.appendToTail(1);
+	l.appendToTail(2);
+	l.appendToTail(3);
+	LNode *temp = l.getTail();
+	l.appendToTail(4);
+	l.appendToTail(5);
+	l.getTail()->next = temp;
+
+	LNode *loopStart = l.getLoopStart();
+	if (loopStart != NULL)
+	{
+		cout << loopStart->data << endl;	
+	}
+	else
+	{
+		cout << "the linklist does not have loop" <<endl;
+	}
+}
+
 int main(int argc, char const *argv[])
 {
+	/*
 	List l1;
 	l1.appendToTail(8);
 	l1.appendToTail(5);
@@ -410,5 +488,7 @@ int main(int argc, char const *argv[])
 	List newlist = l1.splitByX_withOldNode(7);
 	newlist.print();
 	//l1.print();
+	*/
+	getLoopStart_test();
 	return 0;
 }

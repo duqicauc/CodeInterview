@@ -46,6 +46,7 @@ public:
 	void setTail(LNode *t);
 	LNode *getHead();
 	LNode *getTail();
+	int length();
 	~List();
 	/* data */
 private:
@@ -82,6 +83,19 @@ LNode* List::getHead()
 LNode* List::getTail()
 {
 	return tail;
+}
+
+int List::length()
+{
+	int length = 1;
+	LNode* p = head->next;
+
+	while(p != NULL)
+	{
+		length++;
+		p = p->next;
+	}
+	return length;
 }
 
 void List::appendToTail(int data)
@@ -633,8 +647,7 @@ LNode* linklistAdd(LNode *a, LNode *b, int carry)
 	LNode* more = linklistAdd(a->next == NULL ? NULL:a->next,
 		b->next == NULL ? NULL : b->next, value >= 10 ? 1 : 0);
 
-	result->next = more;
-//	cout << result->data << endl;
+	result->next = more; // add the last node to the result
 	return result;
 }
 
@@ -665,6 +678,102 @@ void linklistAdd_test()
 	result.print();
 }
 
+//2-5-(2):给定两个用链表表示的整数，每个结点包含一个数位。这些数位是正向存放的，即个位在
+//链表的尾部。编写函数对这两个整数求和，并用链表形式返回结果。
+//example:
+//输入：(6->1->7)+(2->9->5)，即617+295
+//输出：9->1->2，即912
+void zeroPadding(List l1,int padding)
+{
+	for (int i = 0; i < padding; ++i)
+	{
+		l1.insertToHead(0);
+	}
+}
+
+LNode* insertBefore(LNode *node,int val)
+{
+	LNode *p = new LNode;
+	p->data = val;
+	p->next = NULL;
+
+	if (node != NULL)
+	{
+		p->next = node;
+	}
+	node = p;
+
+	return node;
+}
+
+LNode* addHelper(LNode *a, LNode *b, int &ca)
+{
+	if (a == NULL && b == NULL)
+	{
+		ca = 0;
+		return NULL;
+	}
+
+	//cout << a->data << "+" << b->data <<endl;
+
+	LNode *more = addHelper(a->next, b->next, ca);
+	int value = ca + a->data + b->data;
+//	cout << value <<endl;
+
+	LNode *result = insertBefore(more, value%10);
+	ca = value/10;
+	return result;
+}
+
+List linklistAdd2(List l1, List l2)
+{
+	// construct two lists so that they have the same length
+	int len1 = l1.length();
+	int len2 = l2.length();
+	if (len1 > len2)
+	{
+		zeroPadding(l2,(len1-len2));	
+	}
+	else if(len1 < len2)
+	{
+		zeroPadding(l1,(len2-len1));
+	}
+
+	// add the two list by rescur
+	int carray = 0;
+	LNode* res = addHelper(l1.getHead()->next,l2.getHead()->next,carray);
+
+	// construct the last result list
+	List result;
+	result.setHead(res);
+	
+	LNode *ta = res;
+	while(ta->next != NULL)
+	{
+		ta = ta->next;
+	}
+	result.setTail(ta);
+	if (carray != 0)
+	{
+		result.insertToHead(carray);
+	}
+	return result;
+}
+
+void linklistAdd2_test()
+{
+	List l1;
+	l1.appendToTail(7);
+	l1.appendToTail(6);
+	l1.appendToTail(1);
+	l1.appendToTail(7);
+	List l2;
+	l2.appendToTail(2);
+	l2.appendToTail(9);
+	l2.appendToTail(5);
+	List result = linklistAdd2(l1,l2);
+	result.print();
+}
 
 int main(int argc, char const *argv[])
 {
@@ -695,6 +804,6 @@ int main(int argc, char const *argv[])
 	//getLoopStart_test();
 	//isPlalindrome_test();
 	//reverse_test();
-	linklistAdd_test();
+	linklistAdd2_test();
 	return 0;
 }

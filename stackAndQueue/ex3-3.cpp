@@ -20,6 +20,7 @@ public:
 
 	void push(int value);
 	void pop();
+	void popAt(int index);
 	int top();
 	bool isEmpty();
 	int size();
@@ -73,6 +74,24 @@ void SetOfStacks::pop()
 	num--;
 }
 
+void SetOfStacks::popAt(int index)
+{
+	if (index > numberOfStacks)
+	{
+		throw runtime_error("the index is invalid");
+	}
+
+	int s = stacks[index-1]->size();
+	stacks[index-1]->pop();
+	num--;
+
+	if (s == 1)
+	{
+		stacks.erase(stacks.begin()+index-1);
+		numberOfStacks--;
+	}
+}
+
 int SetOfStacks::top()
 {
 	return stacks[numberOfStacks-1]->top();
@@ -103,6 +122,16 @@ int main(int argc, char const *argv[])
         << i << "." << endl;
 
     s1.pop( );
+
+    i = s1.size( );
+    cout << "After a pop, the stack length is " 
+        << i << "." << endl;
+
+    i = s1.top( );
+    cout << "After a pop, the element at the top of the stack is "
+        << i << "." << endl;
+
+    s1.popAt(1);
 
     i = s1.size( );
     cout << "After a pop, the stack length is " 

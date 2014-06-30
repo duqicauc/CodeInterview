@@ -6,6 +6,8 @@ using namespace std;
 
 const int SIZE = 100;
 
+//方法一：对数组的全部容量固定分割，弱点是空间利用效率不佳，如果提前能预估每个栈大概的容量
+//并作出相应的分配权重，也算是一方面优化
 class FixedStack
 {
 public:

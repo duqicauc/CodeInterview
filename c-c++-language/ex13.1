@@ -1,0 +1,37 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void readLastK(char* file, int k)
+{
+	vector<string> textlines;
+	ifstream in;
+	in.open(file);
+
+	if (in.is_open())
+	{
+		while(!in.eof())
+		{
+			string textline;
+			getline(in,textline,'\n');
+			textlines.push_back(textline);
+		}
+	}
+
+	if (!textlines.empty())
+	{
+		vector<string> ::iterator iter = textlines.begin();
+		iter = iter + (textlines.size() - k); // 打印输入文件的最后k行
+
+		for( ;iter != textlines.end(); iter++)
+			cout << *iter <<endl;
+	}
+}
+
+int main()
+{
+	readLastK("test.txt", 3);
+	return 0;
+}

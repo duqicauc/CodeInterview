@@ -1,0 +1,36 @@
+#include <iostream>
+using namespace std;
+
+const int M=5;
+const int N=3;
+
+int main()
+{
+	int a[M][N] = {{1,2,3},{4,5,6},{7,8,9},{10,11,12},{13,14,15}};
+	int c[N][M] = {0};
+
+	// 关键是这一句，直接给出了转换后的矩阵中的元素c[i][M-1-j]在原来矩阵中的对应位置a[j][i]
+	// 时间复杂度O(n),线性时间复杂度
+	for(int i=0; i < M*N; i++)
+		c[i%N][M-1-i/N] = a[i/N][i%N];
+
+	//输出矩阵a
+	for(int i=0; i < M*N; i++)
+	{
+		if(i%N == 0)
+			cout << endl;
+		cout << a[i/N][i%N] << ' ';
+	}
+	cout << endl;
+
+	//输出矩阵c
+	for(int i=0; i < M*N; i++)
+	{
+		if(i%M==0)
+			cout << endl;
+		cout << c[i/M][i%M] <<' ';
+	}
+	cout << endl;
+
+	return 0;
+}
